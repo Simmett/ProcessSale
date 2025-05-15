@@ -1,6 +1,7 @@
 package integration;
 
 import model.DTO.ArtikelDTO;
+import integration.exceptions.*;
 
 /**
  * ArtikelRegister ansvarar för att tillhandahålla information om artiklar 
@@ -8,18 +9,26 @@ import model.DTO.ArtikelDTO;
  * i systemet.
  */
 public class ArtikelRegister {
-    
+
     /**
      * Hämtar artikelinformation baserat på artikelID och antal.
-     * Metoden kollar artikelID och skapar ett ArtikelDTO-objekt med relevant information.
-     * Om artikelID inte finns, kastas ett IllegalArgumentException.
+     * Om artikelID är "db_error", kastas ett DatabasNedException.
+     * Om artikelID inte finns, kastas ett ArtikelFinnsInteException.
      * 
      * @param artikelID Artikelns unika ID
      * @param antalAvArtikel Antalet av den specifika artikeln
      * @return ArtikelDTO-objekt som innehåller all relevant artikelinformation
-     * @throws IllegalArgumentException Om artikelID inte finns i det fördefinierade urvalet
+     * @throws ArtikelFinnsInteException Om artikelID inte finns
+     * @throws DatabasNedException Om databasfel simuleras
      */
-    public ArtikelDTO hämtaArtikelInformation(String artikelID, int antalAvArtikel) {
+    public ArtikelDTO hämtaArtikelInformation(String artikelID, int antalAvArtikel) 
+            throws ArtikelFinnsInteException, DatabasNedException {
+
+        // Simulerad databaskrasch
+        if ("db_error".equals(artikelID)) {
+            throw new DatabasNedException(artikelID);
+        }
+
         ArtikelDTO artikel = new ArtikelDTO();
 
         switch (artikelID) {
@@ -40,7 +49,7 @@ public class ArtikelRegister {
                 artikel.setAntal(antalAvArtikel);
                 break;
             default:
-                throw new IllegalArgumentException("ArtikelID finns inte: " + artikelID);
+                throw new ArtikelFinnsInteException(artikelID);
         }
 
         return artikel;

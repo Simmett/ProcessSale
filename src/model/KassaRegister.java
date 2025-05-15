@@ -1,5 +1,8 @@
 package model;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +10,8 @@ import java.util.List;
 
 import integration.ArtikelRegister;
 import integration.Kassa;
+import integration.exceptions.ArtikelFinnsInteException;
+import integration.exceptions.DatabasNedException;
 import model.DTO.ArtikelDTO;
 import model.DTO.SkanningsDTO;
 
@@ -56,20 +61,30 @@ public class KassaRegister {
      * @return SkanningsDTO för artikeln
      */
     public SkanningsDTO artikelIDOchAntal(String artikelID, int antalAvArtikel) {
-            ArtikelDTO artikelInfo = artikelRegister.hämtaArtikelInformation(artikelID, antalAvArtikel);
-        
-          
-            for (ArtikelDTO artikel : artiklellista) {
-                if (artikel.getartikelID().equals(artikelInfo.getartikelID())) {
-                    artikel.ökaAntal(antalAvArtikel);
-                    return skapaSkanningsDTO(artikel);
-                }
+    try {
+        ArtikelDTO artikelInfo = artikelRegister.hämtaArtikelInformation(artikelID, antalAvArtikel);
+
+        for (ArtikelDTO artikel : artiklellista) {
+            if (artikel.getartikelID().equals(artikelInfo.getartikelID())) {
+                artikel.ökaAntal(antalAvArtikel);
+                return skapaSkanningsDTO(artikel);
             }
-        
-          
-            artiklellista.add(artikelInfo);
-            return skapaSkanningsDTO(artikelInfo);
+        }
+
+        artiklellista.add(artikelInfo);
+        return skapaSkanningsDTO(artikelInfo);
+
+    } catch (ArtikelFinnsInteException e) {
+        System.out.println("Fel: Artikel-ID \"" + artikelID + "\" finns inte.");
+        loggaFel(e);
+    } catch (DatabasNedException e) {
+        System.out.println("Fel: Databasen kunde inte kontaktas.");
+        loggaFel(e);
     }
+
+    return null; // Returnera null om exception inträffade (eller hantera på annat sätt)
+}
+
 
     /**
      * Skapar ett SkanningsDTO från en artikel.
@@ -141,5 +156,14 @@ public class KassaRegister {
     public float försäljningsAvslut(float nyttPris){
         return nyttPris;
     }
+
+    private void loggaFel(Exception e) {
+    try (PrintWriter log = new PrintWriter(new FileWriter("felLogg.txt", true))) {
+        e.printStackTrace(log);  // Skriver stacktrace till fil
+    } catch (IOException ioEx) {
+        System.out.println("Kunde inte logga felet: " + ioEx.getMessage());
+    }
+}
+
 
 }

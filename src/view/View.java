@@ -135,4 +135,11 @@ public class View {
     public void skrivUtRabatt(float rabatt){
         System.out.println("Rabatt tillämpad: -" + rabatt + " kr");
     }
+
+    public void skrivFelmeddelandeTillAnvändare(String meddelande) {
+    System.out.println("FEL: " + meddelande);
+    }
+
+
+
 }

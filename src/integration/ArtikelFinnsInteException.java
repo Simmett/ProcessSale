@@ -1,4 +1,4 @@
-package integration.exceptions;
+package integration;
 
 /**
  * Denna exception kastas när en artikel med ett angivet ID inte finns i lagret.

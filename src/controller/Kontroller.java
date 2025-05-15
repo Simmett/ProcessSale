@@ -4,13 +4,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import model.KassaRegister;
+import integration.ArtikelFinnsInteException;
 import integration.Kassa;
 import view.View;
 import model.DTO.Kvitto;
 import integration.RabattSystem;
-import integration.exceptions.ArtikelFinnsInteException;
-import integration.exceptions.DatabasNedException;
 import integration.LagerData;
+import integration.LagerDatabasException;
 import model.DTO.ArtikelDTO;
 
 /**
@@ -92,7 +92,7 @@ public class Kontroller {
         for (ArtikelDTO artikelDTO : artikelLista) {
                 try {
                 kassaRegister.artikelIDOchAntal(artikelDTO.getartikelID(), artikelDTO.getantalAvArtikel());
-                } catch (DatabasNedException e) {
+                } catch (LagerDatabasException e) {
                 view.skrivFelmeddelandeTillAnvändare("Databasen kunde inte kontaktas. Försök igen senare.", e);
                 } catch (ArtikelFinnsInteException e) {
                 view.skrivFelmeddelandeTillAnvändare("Artikeln med ID " + artikelDTO.getartikelID() + " finns inte i systemet.", e);

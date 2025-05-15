@@ -18,7 +18,7 @@ public class FileLogger {
      */
     public FileLogger() {
         try {
-            logStream = new PrintWriter(new FileWriter("log.txt", true), true); // true = append
+            logStream = new PrintWriter(new FileWriter("log.txt", true), true);
         } catch (IOException ioe) {
             System.out.println("KAN INTE LOGGA.");
             ioe.printStackTrace();

@@ -1,7 +1,6 @@
 package integration;
 
 import model.DTO.ArtikelDTO;
-import integration.exceptions.*;
 
 /**
  * ArtikelRegister ansvarar för att tillhandahålla information om artiklar 
@@ -22,10 +21,10 @@ public class ArtikelRegister {
      * @throws DatabasNedException Om databasfel simuleras
      */
     public ArtikelDTO hämtaArtikelInformation(String artikelID, int antalAvArtikel) 
-            throws ArtikelFinnsInteException, DatabasNedException {
+            throws ArtikelFinnsInteException{
 
-        if ("db_error".equals(artikelID)) {
-            throw new DatabasNedException(artikelID);
+        if ("999".equals(artikelID)) {
+            throw new LagerDatabasException(artikelID);
         }
 
         ArtikelDTO artikel = new ArtikelDTO();

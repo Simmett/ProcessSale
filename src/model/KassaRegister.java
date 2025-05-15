@@ -4,11 +4,10 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import integration.ArtikelFinnsInteException;
 import integration.ArtikelRegister;
 import integration.Kassa;
-import integration.exceptions.ArtikelFinnsInteException;
-import integration.exceptions.DatabasNedException;
+import integration.LagerDatabasException;
 import model.DTO.ArtikelDTO;
 import model.DTO.SkanningsDTO;
 
@@ -34,7 +33,6 @@ public class KassaRegister {
 
     /**
      * Konstruktor som initialiserar kassa och printer för KassaRegister.
-     * @param printer Printer för kvittoutskrift
      * @param kassa Kassa för uppdatering av saldo
      */
     public KassaRegister(Kassa kassa){
@@ -58,7 +56,7 @@ public class KassaRegister {
      * @return SkanningsDTO för artikeln
      */
     public SkanningsDTO artikelIDOchAntal(String artikelID, int antalAvArtikel) 
-    throws ArtikelFinnsInteException, DatabasNedException {
+    throws ArtikelFinnsInteException, LagerDatabasException {
 
     ArtikelDTO artikelInfo = artikelRegister.hämtaArtikelInformation(artikelID, antalAvArtikel);
 

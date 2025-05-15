@@ -1,0 +1,8 @@
+[2025-05-15T17:26:41.238784200] Artikeln med ID 111 finns inte i systemet.
+Exception: integration.exceptions.ArtikelFinnsInteException - Artikel med ID "111" finns inte.
+integration.exceptions.ArtikelFinnsInteException: Artikel med ID "111" finns inte.
+	at integration.ArtikelRegister.hämtaArtikelInformation(ArtikelRegister.java:52)
+	at model.KassaRegister.artikelIDOchAntal(KassaRegister.java:63)
+	at controller.Kontroller.läggTillArtiklar(Kontroller.java:94)
+	at controller.Kontroller.hanteraKassaFlöde(Kontroller.java:39)
+	at startup.Main.main(Main.java:24)

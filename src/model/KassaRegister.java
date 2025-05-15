@@ -1,8 +1,5 @@
 package model;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,30 +57,22 @@ public class KassaRegister {
      * @param antalAvArtikel Antal av artikeln som läggs till
      * @return SkanningsDTO för artikeln
      */
-    public SkanningsDTO artikelIDOchAntal(String artikelID, int antalAvArtikel) {
-    try {
-        ArtikelDTO artikelInfo = artikelRegister.hämtaArtikelInformation(artikelID, antalAvArtikel);
+    public SkanningsDTO artikelIDOchAntal(String artikelID, int antalAvArtikel) 
+    throws ArtikelFinnsInteException, DatabasNedException {
 
-        for (ArtikelDTO artikel : artiklellista) {
-            if (artikel.getartikelID().equals(artikelInfo.getartikelID())) {
-                artikel.ökaAntal(antalAvArtikel);
-                return skapaSkanningsDTO(artikel);
-            }
+    ArtikelDTO artikelInfo = artikelRegister.hämtaArtikelInformation(artikelID, antalAvArtikel);
+
+    for (ArtikelDTO artikel : artiklellista) {
+        if (artikel.getartikelID().equals(artikelInfo.getartikelID())) {
+            artikel.ökaAntal(antalAvArtikel);
+            return skapaSkanningsDTO(artikel);
         }
-
-        artiklellista.add(artikelInfo);
-        return skapaSkanningsDTO(artikelInfo);
-
-    } catch (ArtikelFinnsInteException e) {
-        System.out.println("Fel: Artikel-ID \"" + artikelID + "\" finns inte.");
-        loggaFel(e);
-    } catch (DatabasNedException e) {
-        System.out.println("Fel: Databasen kunde inte kontaktas.");
-        loggaFel(e);
     }
 
-    return null; // Returnera null om exception inträffade (eller hantera på annat sätt)
-}
+    artiklellista.add(artikelInfo);
+    return skapaSkanningsDTO(artikelInfo);
+   }
+
 
 
     /**
@@ -157,13 +146,6 @@ public class KassaRegister {
         return nyttPris;
     }
 
-    private void loggaFel(Exception e) {
-    try (PrintWriter log = new PrintWriter(new FileWriter("felLogg.txt", true))) {
-        e.printStackTrace(log);  // Skriver stacktrace till fil
-    } catch (IOException ioEx) {
-        System.out.println("Kunde inte logga felet: " + ioEx.getMessage());
-    }
-}
-
+    
 
 }

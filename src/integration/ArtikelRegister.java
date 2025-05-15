@@ -24,7 +24,6 @@ public class ArtikelRegister {
     public ArtikelDTO hämtaArtikelInformation(String artikelID, int antalAvArtikel) 
             throws ArtikelFinnsInteException, DatabasNedException {
 
-        // Simulerad databaskrasch
         if ("db_error".equals(artikelID)) {
             throw new DatabasNedException(artikelID);
         }

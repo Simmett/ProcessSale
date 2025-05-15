@@ -5,6 +5,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.FileLogger;
 import model.DTO.Kvitto;
 import model.DTO.ArtikelDTO;
 
@@ -15,6 +16,8 @@ import model.DTO.ArtikelDTO;
 public class View {
     
     private Scanner scanner = new Scanner(System.in);
+    private FileLogger logger = new FileLogger();
+
 
     /**
      * Skapar ett nytt View-objekt för användarinteraktion.
@@ -136,10 +139,15 @@ public class View {
         System.out.println("Rabatt tillämpad: -" + rabatt + " kr");
     }
 
-    public void skrivFelmeddelandeTillAnvändare(String meddelande) {
+   /**
+ * Visar ett användarvänligt felmeddelande i konsolen och loggar det till fil.
+ *
+ * @param meddelande Felmeddelande till användaren.
+ */
+  public void skrivFelmeddelandeTillAnvändare(String meddelande, Exception e) {
     System.out.println("FEL: " + meddelande);
-    }
-
-
+    logger.log(meddelande);
+    logger.logException(e);
+}
 
 }

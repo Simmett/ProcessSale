@@ -8,6 +8,8 @@ import integration.Kassa;
 import view.View;
 import model.DTO.Kvitto;
 import integration.RabattSystem;
+import integration.exceptions.ArtikelFinnsInteException;
+import integration.exceptions.DatabasNedException;
 import integration.LagerData;
 import model.DTO.ArtikelDTO;
 
@@ -88,7 +90,18 @@ public class Kontroller {
 
     private void läggTillArtiklar(List<ArtikelDTO> artikelLista) {
         for (ArtikelDTO artikelDTO : artikelLista) {
-            kassaRegister.artikelIDOchAntal(artikelDTO.getartikelID(), artikelDTO.getantalAvArtikel());
+                try {
+                kassaRegister.artikelIDOchAntal(artikelDTO.getartikelID(), artikelDTO.getantalAvArtikel());
+                } catch (DatabasNedException e) {
+                view.skrivFelmeddelandeTillAnvändare("Databasen kunde inte kontaktas. Försök igen senare.", e);
+                } catch (ArtikelFinnsInteException e) {
+                view.skrivFelmeddelandeTillAnvändare("Artikeln med ID " + artikelDTO.getartikelID() + " finns inte i systemet.", e);
+            }
         }
     }
+
+
+     
+   
+
 }

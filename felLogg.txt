@@ -1,6 +1,0 @@
-integration.exceptions.ArtikelFinnsInteException: Artikel med ID "abc1211" finns inte.
-	at integration.ArtikelRegister.hämtaArtikelInformation(ArtikelRegister.java:52)
-	at model.KassaRegister.artikelIDOchAntal(KassaRegister.java:65)
-	at controller.Kontroller.läggTillArtiklar(Kontroller.java:91)
-	at controller.Kontroller.hanteraKassaFlöde(Kontroller.java:37)
-	at startup.Main.main(Main.java:24)

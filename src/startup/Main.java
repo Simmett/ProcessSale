@@ -2,6 +2,15 @@ package startup;
 
 import controller.Kontroller;
 
+/**
+ * Main-klassen representerar startpunkten för POS-applikationen.
+ * 
+ * Den ansvarar för att skapa nödvändiga objekt och starta försäljningsflödet
+ * genom att anropa relevant metod i kontrollern.
+ * 
+ * Denna klass innehåller endast main-metoden och används för att initiera programkörningen.
+ */
+
 public class Main {
     /**
      * Huvudmetoden som startar applikationen.

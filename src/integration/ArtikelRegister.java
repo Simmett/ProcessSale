@@ -2,6 +2,11 @@ package integration;
 
 import model.DTO.ArtikelDTO;
 
+/**
+ * ArtikelRegister ansvarar för att tillhandahålla information om artiklar 
+ * baserat på deras ID. Det fungerar som ett hårdkodat register över artiklar 
+ * i systemet.
+ */
 public class ArtikelRegister {
     
     /**
@@ -15,10 +20,8 @@ public class ArtikelRegister {
      * @throws IllegalArgumentException Om artikelID inte finns i det fördefinierade urvalet
      */
     public ArtikelDTO hämtaArtikelInformation(String artikelID, int antalAvArtikel) {
-     
         ArtikelDTO artikel = new ArtikelDTO();
-    
-      
+
         switch (artikelID) {
             case "abc123":
                 artikel.setArtikelID(artikelID);
@@ -37,11 +40,9 @@ public class ArtikelRegister {
                 artikel.setAntal(antalAvArtikel);
                 break;
             default:
-              
                 throw new IllegalArgumentException("ArtikelID finns inte: " + artikelID);
         }
-    
-      
+
         return artikel;
     }
 }

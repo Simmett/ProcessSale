@@ -1,5 +1,13 @@
 package model.DTO;
 
+/**
+ * SkanningsDTO representerar data som genereras vid skanning av en artikel i en försäljningsprocess.
+ * Denna klass fungerar som en Data Transfer Object (DTO) och innehåller information om 
+ * artikelns ID, namn, pris, moms, beskrivning och antal.
+ * 
+ * Används främst för att föra data mellan modell och vy utan att exponera underliggande logik.
+ */
+
 public class SkanningsDTO {
     private String artikelID;
     private float artikelPris;

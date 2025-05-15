@@ -3,6 +3,15 @@ package model.DTO;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * Kvitto representerar ett kvitto för en genomförd försäljning. 
+ * Det innehåller detaljer såsom tid och datum för försäljningen, 
+ * totalpris före och efter rabatt, total moms, betalat belopp, 
+ * lista av sålda artiklar, växel samt eventuell rabatt.
+ * 
+ * Används som en Data Transfer Object (DTO) mellan modell och presentation.
+ */
+
 public class Kvitto {
     private LocalTime tidsförsäljning;         
     private float totalpris; 
@@ -13,9 +22,22 @@ public class Kvitto {
     private LocalDate datum; 
     private float nyttPris;  
     private float rabatt;      
-  
+    
+        /**
+     * Skapar ett Kvitto-objekt med all nödvändig information om en försäljning.
+     *
+     * @param tidsförsäljning Tiden då försäljningen ägde rum
+     * @param totalpris Det totala priset före eventuell rabatt
+     * @param totalVat Den totala momsen för försäljningen
+     * @param betalatBelopp Det belopp kunden betalade
+     * @param listaAvArtiklar En textrepresentation av alla artiklar i försäljningen
+     * @param växel Den växel som ska ges tillbaka till kunden
+     * @param datum Datum för försäljningen
+     * @param nyttPris Priset efter att rabatt har tillämpats
+     * @param rabatt Den rabatt som har dragits från totalpriset
+     */
 
-    // Konstruktor som initierar alla attribut för kvittot
+
     public Kvitto(  LocalTime tidsförsäljning,          
                     float totalpris,
                     float totalVat,

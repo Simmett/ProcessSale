@@ -7,7 +7,6 @@ import java.util.List;
 import integration.ArtikelFinnsInteException;
 import integration.ArtikelRegister;
 import integration.Kassa;
-import integration.LagerDatabasException;
 import model.DTO.ArtikelDTO;
 import model.DTO.SkanningsDTO;
 
@@ -57,7 +56,7 @@ public class KassaRegister {
      * @return SkanningsDTO för artikeln
      */
     public SkanningsDTO artikelIDOchAntal(String artikelID, int antalAvArtikel) 
-    throws ArtikelFinnsInteException, LagerDatabasException {
+    throws ArtikelFinnsInteException {
 
     ArtikelDTO artikelInfo = artikelRegister.hämtaArtikelInformation(artikelID, antalAvArtikel);
 

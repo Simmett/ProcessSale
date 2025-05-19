@@ -57,6 +57,8 @@ public class Kontroller {
 
         lagerData.uppdateraLager(kvitto);
 
+        kassaRegister.försäljningsAvslut(nyttpris);
+
         view.skrivUtKvitto(kvitto);
 
         view.avslutaFörsäljning();
@@ -114,10 +116,5 @@ public class Kontroller {
     public void addRevenueObserver(RevenueObserver observer){
     kassaRegister.addRevenueObserver(observer);
     }
-
-
-    
-     
-   
 
 }

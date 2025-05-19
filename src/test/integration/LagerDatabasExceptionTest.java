@@ -17,8 +17,8 @@ public class LagerDatabasExceptionTest {
     }
 
     @Test
-    public void testExceptionIsInstanceOfException() {
-        LagerDatabasException exception = new LagerDatabasException("999");
-        assertTrue(exception instanceof Exception, "LagerDatabasException borde vara en subklass till Exception.");
+    public void testExceptionIsInstanceOfRuntimeException() {
+        LagerDatabasException RuntimeException = new LagerDatabasException("999");
+        assertTrue(RuntimeException instanceof Exception, "LagerDatabasException borde vara en subklass till RuntimeException.");
     }
 }

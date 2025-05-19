@@ -188,3 +188,59 @@ integration.ArtikelFinnsInteException: Artikel med ID "1001" finns inte.
 	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:748)
 	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:443)
 	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:211)
+[2025-05-19T19:04:04.038458800] Artikeln med ID 111 finns inte i systemet.
+Exception: integration.ArtikelFinnsInteException - Artikel med ID "111" finns inte.
+integration.ArtikelFinnsInteException: Artikel med ID "111" finns inte.
+	at integration.ArtikelRegister.hämtaArtikelInformation(ArtikelRegister.java:49)
+	at model.KassaRegister.artikelIDOchAntal(KassaRegister.java:62)
+	at controller.Kontroller.läggTillArtiklar(Kontroller.java:99)
+	at controller.Kontroller.hanteraKassaFlöde(Kontroller.java:42)
+	at startup.Main.main(Main.java:29)
+[2025-05-19T19:06:15.440976100] Databasen kunde inte kontaktas. Försök igen senare.
+Exception: integration.LagerDatabasException - Databasfel vid åtkomst till artikel med ID: 999
+integration.LagerDatabasException: Databasfel vid åtkomst till artikel med ID: 999
+	at integration.ArtikelRegister.hämtaArtikelInformation(ArtikelRegister.java:26)
+	at model.KassaRegister.artikelIDOchAntal(KassaRegister.java:62)
+	at controller.Kontroller.läggTillArtiklar(Kontroller.java:99)
+	at controller.Kontroller.hanteraKassaFlöde(Kontroller.java:42)
+	at startup.Main.main(Main.java:29)
+[2025-05-19T19:08:28.798162900] Artikeln med ID ad11 finns inte i systemet.
+Exception: integration.ArtikelFinnsInteException - Artikel med ID "ad11" finns inte.
+integration.ArtikelFinnsInteException: Artikel med ID "ad11" finns inte.
+	at integration.ArtikelRegister.hämtaArtikelInformation(ArtikelRegister.java:49)
+	at model.KassaRegister.artikelIDOchAntal(KassaRegister.java:62)
+	at controller.Kontroller.läggTillArtiklar(Kontroller.java:99)
+	at controller.Kontroller.hanteraKassaFlöde(Kontroller.java:42)
+	at startup.Main.main(Main.java:29)
+[2025-05-19T19:18:05.478893400] Artikeln med ID 111 finns inte i systemet.
+Exception: integration.ArtikelFinnsInteException - Artikel med ID "111" finns inte.
+integration.ArtikelFinnsInteException: Artikel med ID "111" finns inte.
+	at integration.ArtikelRegister.hämtaArtikelInformation(ArtikelRegister.java:49)
+	at model.KassaRegister.artikelIDOchAntal(KassaRegister.java:62)
+	at controller.Kontroller.läggTillArtiklar(Kontroller.java:101)
+	at controller.Kontroller.hanteraKassaFlöde(Kontroller.java:42)
+	at startup.Main.main(Main.java:29)
+[2025-05-19T21:04:09.498442400] Databasen kunde inte kontaktas. Försök igen senare.
+Exception: integration.LagerDatabasException - Databasfel vid åtkomst till artikel med ID: 999
+integration.LagerDatabasException: Databasfel vid åtkomst till artikel med ID: 999
+	at integration.ArtikelRegister.hämtaArtikelInformation(ArtikelRegister.java:26)
+	at model.KassaRegister.artikelIDOchAntal(KassaRegister.java:61)
+	at controller.Kontroller.läggTillArtiklar(Kontroller.java:101)
+	at controller.Kontroller.hanteraKassaFlöde(Kontroller.java:42)
+	at startup.Main.main(Main.java:29)
+[2025-05-19T22:38:45.963953900] Artikeln med ID hej finns inte i systemet.
+Exception: integration.ArtikelFinnsInteException - Artikel med ID "hej" finns inte.
+integration.ArtikelFinnsInteException: Artikel med ID "hej" finns inte.
+	at integration.ArtikelRegister.hämtaArtikelInformation(ArtikelRegister.java:49)
+	at model.KassaRegister.artikelIDOchAntal(KassaRegister.java:61)
+	at controller.Kontroller.läggTillArtiklar(Kontroller.java:101)
+	at controller.Kontroller.hanteraKassaFlöde(Kontroller.java:42)
+	at startup.Main.main(Main.java:29)
+[2025-05-19T22:40:54.970061900] Databasen kunde inte kontaktas. Försök igen senare.
+Exception: integration.LagerDatabasException - Databasfel vid åtkomst till artikel med ID: 999
+integration.LagerDatabasException: Databasfel vid åtkomst till artikel med ID: 999
+	at integration.ArtikelRegister.hämtaArtikelInformation(ArtikelRegister.java:26)
+	at model.KassaRegister.artikelIDOchAntal(KassaRegister.java:61)
+	at controller.Kontroller.läggTillArtiklar(Kontroller.java:101)
+	at controller.Kontroller.hanteraKassaFlöde(Kontroller.java:42)
+	at startup.Main.main(Main.java:29)

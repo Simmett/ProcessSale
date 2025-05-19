@@ -18,7 +18,6 @@ import java.time.format.FormatStyle;
  */
 public class TotalRevenueFileOutput implements RevenueObserver {
     private static final String REVENUE_FILE = "total.revenue.txt";
-    private double newRevenue = 0;
     private PrintWriter writer;
 
     /**

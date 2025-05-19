@@ -18,7 +18,6 @@ public class KassaRegisterTest {
 
     @BeforeEach
     public void setup() {
-        // Mock eller riktig instans av Kassa, beroende på implementation
         Kassa kassa = new Kassa();
         kassaRegister = new KassaRegister(kassa);
     }

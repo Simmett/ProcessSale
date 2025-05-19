@@ -10,7 +10,6 @@ public class KassaTest {
     
     private Kassa kassa;
 
-    // Sätt upp en ny Kassa innan varje test
     @BeforeEach
     public void setUp() {
         kassa = new Kassa();

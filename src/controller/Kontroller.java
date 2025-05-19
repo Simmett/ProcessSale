@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import model.KassaRegister;
+import model.RevenueNotifier;
+import model.RevenueObserver;
 import integration.ArtikelFinnsInteException;
 import integration.Kassa;
 import view.View;
@@ -24,6 +26,7 @@ public class Kontroller {
     private View view = new View();
     private KassaRegister kassaRegister = new KassaRegister(kassa);
     private LagerData lagerData = new LagerData();
+    private final RevenueNotifier revenueNotifier = new RevenueNotifier();
 
     /**
      * Hanterar hela kassa-flödet, inklusive att sätta tid för försäljning, 
@@ -45,6 +48,8 @@ public class Kontroller {
         float betalatBelopp = view.betalatBelopp();
 
         float växel = processSale(nyttpris, betalatBelopp);
+
+        revenueNotifier.notifyObservers(nyttpris);
 
         Kvitto kvitto = skapaKvitto(betalatBelopp, nyttpris, växel);
 
@@ -99,8 +104,19 @@ public class Kontroller {
             }
         }
     }
+    /**
+     * Lägger till en observerare som ska notifieras vid uppdatering av total intäkt.
+     * 
+     * Denna metod vidarebefordrar observeraren till {@code KassaRegister} där observermönstret hanteras.
+     *
+     * @param observer En instans som implementerar {@link RevenueObserver} och ska notifieras om ny totalintäkt.
+     */
+    public void addRevenueObserver(RevenueObserver observer){
+    kassaRegister.addRevenueObserver(observer);
+    }
 
 
+    
      
    
 

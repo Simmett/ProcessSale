@@ -1,6 +1,8 @@
 package startup;
 
 import controller.Kontroller;
+import util.TotalRevenueFileOutput;
+import view.TotalRevenueView;
 
 /**
  * Main-klassen representerar startpunkten för POS-applikationen.
@@ -18,8 +20,11 @@ public class Main {
      * @param args Kommando-radsargument (ej använda i denna implementation)
      */
     public static void main(String[] args) {
-        
+
         Kontroller controller = new Kontroller();  
+
+        controller.addRevenueObserver(new TotalRevenueView());
+        controller.addRevenueObserver(new TotalRevenueFileOutput());
         
         controller.hanteraKassaFlöde();  
 

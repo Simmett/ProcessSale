@@ -30,6 +30,7 @@ public class KassaRegister {
     private List<ArtikelDTO> artiklellista = new ArrayList<>();
     private ArtikelRegister artikelRegister = new ArtikelRegister();
     private Kassa kassa;
+    private RevenueNotifier revenueNotifier = new RevenueNotifier();
 
     /**
      * Konstruktor som initialiserar kassa och printer för KassaRegister.
@@ -141,8 +142,19 @@ public class KassaRegister {
      * @return Det nya priset
      */
     public float försäljningsAvslut(float nyttPris){
+        revenueNotifier.notifyObservers(nyttPris);  
         return nyttPris;
     }
+   
+    /**
+     * Registrerar en ny intäktsobservatör som kommer att notifieras vid varje försäljningsavslut.
+     *
+     * @param observer Ett objekt som implementerar {@link RevenueObserver}-interfacet.
+     */
+    public void addRevenueObserver(RevenueObserver observer) {
+    revenueNotifier.addObserver(observer);
+}
+    
 
     
 

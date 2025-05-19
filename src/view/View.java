@@ -26,31 +26,6 @@ public class View {
     }
 
     /**
-     * Skriver ut kvittoinformation på konsolen.
-     * Den här metoden kan modifieras för att skriva ut till andra enheter, 
-     * exempelvis en fysisk skrivare om det behövs i framtiden.
-     * 
-     * @param kvitto Kvittoobjekt som innehåller försäljningsinformation.
-     * @throws IllegalArgumentException Om kvitto är null.
-     */
-    public void skrivUtKvitto(Kvitto kvitto) {
-        if (kvitto == null) {
-            throw new IllegalArgumentException("Kvitto kan inte vara null.");
-        }
-
-        System.out.println("----- KVITTO -----");
-        System.out.println("Tid: " + kvitto.gettidFörsäljning());  
-        System.out.println("Datum: " + kvitto.getdatum());           
-        System.out.println("Artiklar: " + kvitto.getlistaAvArtiklar()); 
-        System.out.println("Totalpris: " + kvitto.gettotalPris() + " SEK"); 
-        System.out.println("Rabatt: -" + kvitto.getrabatt() + " kr");  
-        System.out.println("Moms: " + kvitto.gettotalVat() + " SEK");   
-        System.out.println("Betalat: " + kvitto.getbetalatBelopp() + " SEK"); 
-        System.out.println("Växel: " + kvitto.getväxel() + " SEK");     
-        System.out.println("------------------");
-    }
-
-    /**
      * Skriver ut att försäljningen har startat och visar aktuell tid.
      * @param tid Tiden då försäljningen påbörjades
      */
@@ -137,6 +112,31 @@ public class View {
      */
     public void skrivUtRabatt(float rabatt){
         System.out.println("Rabatt tillämpad: -" + rabatt + " kr");
+    }
+
+     /**
+     * Skriver ut kvittoinformation på konsolen.
+     * Den här metoden kan modifieras för att skriva ut till andra enheter, 
+     * exempelvis en fysisk skrivare om det behövs i framtiden.
+     * 
+     * @param kvitto Kvittoobjekt som innehåller försäljningsinformation.
+     * @throws IllegalArgumentException Om kvitto är null.
+     */
+    public void skrivUtKvitto(Kvitto kvitto) {
+        if (kvitto == null) {
+            throw new IllegalArgumentException("Kvitto kan inte vara null.");
+        }
+
+        System.out.println("----- KVITTO -----");
+        System.out.println("Tid: " + kvitto.gettidFörsäljning());  
+        System.out.println("Datum: " + kvitto.getdatum());           
+        System.out.println("Artiklar: " + kvitto.getlistaAvArtiklar()); 
+        System.out.println("Totalpris: " + kvitto.gettotalPris() + " SEK"); 
+        System.out.println("Rabatt: -" + kvitto.getrabatt() + " kr");  
+        System.out.println("Moms: " + kvitto.gettotalVat() + " SEK");   
+        System.out.println("Betalat: " + kvitto.getbetalatBelopp() + " SEK"); 
+        System.out.println("Växel: " + kvitto.getväxel() + " SEK");     
+        System.out.println("------------------");
     }
 
    /**

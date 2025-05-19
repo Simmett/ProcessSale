@@ -1,4 +1,4 @@
-package test;
+package test.integration;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ public class LagerDatabasExceptionTest {
 
     @Test
     public void testExceptionIsInstanceOfException() {
-        LagerDatabasException exception = new LagerDatabasException("XYZ999");
+        LagerDatabasException exception = new LagerDatabasException("999");
         assertTrue(exception instanceof Exception, "LagerDatabasException borde vara en subklass till Exception.");
     }
 }

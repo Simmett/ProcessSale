@@ -23,7 +23,6 @@ public class Kassa {
 
       
         saldo += totalPris;
-        System.out.println("Kassa uppdaterad. Nytt saldo: " + saldo);
     }
 
     /**

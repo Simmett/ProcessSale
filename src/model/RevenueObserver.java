@@ -6,7 +6,7 @@ package model;
 public interface RevenueObserver {
     /**
      * Anropas när en ny försäljning har skett och intäkten uppdateras
-     * @param totalRevenue Den uppdaterade totala intäkten
+     * @param revenue Den uppdaterade totala intäkten
      */
-    void newRevenue(double totalRevenue);
+    void newRevenue(double revenue);
 }

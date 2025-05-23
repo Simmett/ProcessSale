@@ -1,13 +1,15 @@
 package view;
 
-import java.time.LocalTime;
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.io.IOException;
 import util.FileLogger;
+import util.TotalRevenueFileOutput;
 import model.DTO.Kvitto;
+import model.DTO.SkanningsDTO;
+import model.SåldArtikel;
 import model.DTO.ArtikelDTO;
+import controller.Kontroller;
+import controller.SystemOperationFailureException;
+import integration.ArtikelFinnsInteException;
 
 /**
  * View-klassen ansvarar för att hantera all interaktion med användaren i konsolen.
@@ -15,139 +17,122 @@ import model.DTO.ArtikelDTO;
  */
 public class View {
     
-    private Scanner scanner = new Scanner(System.in);
-    private FileLogger logger = new FileLogger();
+    private Kontroller kontroller;
+    private FileLogger fileLogger;
+    private FelMeddelandeHanterare felMeddelandeHanterare;
+
+    private static final int ARTIKELID_FINNS_INTE_I_LAGRET = 999;
+    private static final int BIG_WHEEL_OATMEAL_ID = 123;
+    private static final int YOUGOGO_BLUEBERRY_ID = 456;
 
 
     /**
      * Skapar ett nytt View-objekt för användarinteraktion.
      */
-    public View() {
+    public View(Kontroller kontroller) throws IOException {
+        this.kontroller = kontroller;
+        this.felMeddelandeHanterare = new FelMeddelandeHanterare();
+        this.fileLogger = new FileLogger();
+        kontroller.addRevenueObserver(TotalRevenueView.getTotalRevenueView());
+        kontroller.addRevenueObserver(new TotalRevenueFileOutput());
     }
 
-    /**
-     * Skriver ut att försäljningen har startat och visar aktuell tid.
-     * @param tid Tiden då försäljningen påbörjades
-     */
-    public void startaFörsäljning(LocalTime tid){
-        System.out.println("Försäljning Startad");
-        System.out.println("Kontroller: tidFörsäljning = " + tid);
+    public void körFörsäljning(){
+        startaFörsäljning();
+        skannaArtikel(ARTIKELID_FINNS_INTE_I_LAGRET);
+        skannaArtikel(BIG_WHEEL_OATMEAL_ID);
+        skannaArtikel(YOUGOGO_BLUEBERRY_ID);
+        angeMängd(2);
+        avslutaFörsäljning();
+        betala(300);
     }
 
-    /**
-     * Tar emot användarens inmatning av artikel-ID och antal via konsolen.
-     * Fortsätter tills användaren skriver "sluta".
-     * 
-     * @return En lista med ArtikelDTO-objekt baserat på användarens inmatning
-     */
-    public List<ArtikelDTO> artikelInformation(){
-        int antalAvArtikel = 0;
-        String artikelID;
-        List<ArtikelDTO> artikelLista = new ArrayList<>();
+    public void startaFörsäljning(){
+        kontroller.startaFörsäljning();
+        System.out.println("Ny försäljning startad!\n");
+    }
 
-        while (true) {
-            System.out.print("Ange artikel ID (eller 'sluta' för att avsluta): ");
-            artikelID = scanner.nextLine();
-            if (artikelID.equalsIgnoreCase("sluta")) {
-                break; 
-            }
-
-            System.out.print("Ange antal av artikeln: ");
-            antalAvArtikel = scanner.nextInt();
-            scanner.nextLine(); 
-            artikelLista.add(new ArtikelDTO(artikelID, antalAvArtikel));
+    private void skannaArtikel(int artikelID){
+        System.out.println("Skannad vara");
+        try{
+            SkanningsDTO säljInformation = kontroller.skannaArtikel(artikelID);
+            visaArtikelInfo(säljInformation);
+            visaTotalPris(säljInformation);
         }
-        return artikelLista;
+        catch(ArtikelFinnsInteException exc){
+            felMeddelandeHanterare.visaFelMeddelande("Artikel ID: " + exc.hämtaFelArtikelID() + "finns inte i lagret ");
+        }
+        catch(SystemOperationFailureException exc){
+            felMeddelandeHanterare.visaFelMeddelande("Databasen kan inte nås");
+            fileLogger.logException(exc);
+        }
+        catch(Exception exc){
+            felMeddelandeHanterare.visaFelMeddelande("Operationen misslyckades");
+            fileLogger.logException(exc);
+        }
     }
 
-    /**
-     * Ber användaren ange ett kund-ID för eventuell rabatt.
-     * 
-     * @return Angivet kund-ID, eller 0 om ingen rabatt önskas
-     */
-    public int kundID(){
-        System.out.print("Ange kund ID för rabatt (eller 0 om ingen): ");
-        int kundID = scanner.nextInt();
-        return kundID;
+    private void angeMängd(int mängd){
+        SkanningsDTO säljInformation = kontroller.angeMängd(mängd);
+        String senasteArtikel = säljInformation.getSenasteSåldaArtikel().getArtikelDTO().getnamn();
+        System.out.println("Nya mängden av varan: " + senasteArtikel + "= " + mängd);
+        visaArtikelInfo(säljInformation);
+        visaTotalPris(säljInformation);
     }
 
-    /**
-     * Ber användaren ange det betalda beloppet.
-     * 
-     * @return Det belopp som kunden har betalat
-     */
-    public float betalatBelopp(){
-        System.out.print("Ange betalat belopp: ");
-        float betalatBelopp = scanner.nextFloat();
-        return betalatBelopp;
+    private void avslutaFörsäljning(){
+        SkanningsDTO nySäljInformation = kontroller.avslutaFörsäljning();
+        System.out.println("Avslutad Försäljning!");
+        System.out.println("Totalpris och VAT för köpet");
+        visaTotalPris(nySäljInformation);
     }
 
-    /**
-     * Skriver ut växel som ska ges tillbaka till kunden.
-     * 
-     * @param växel Växelbelopp att visas
-     */
-    public void skrivUtVäxel(float växel){
-        System.out.println("Växel att ge tillbaka: " + växel);
+    private void visaArtikelInfo(SkanningsDTO säljInformation){
+        SåldArtikel såldArtikel = säljInformation.getSenasteSåldaArtikel();
+        ArtikelDTO artikel = såldArtikel.getArtikelDTO();
+
+        System.out.println("Artikel ID: " + artikel.getartikelID());
+        System.out.println("Namn: " + artikel.getnamn());
+        System.out.printf("Kostnad för varan: %.2f SEK%n", artikel.getartikelPris());
+        System.out.printf("VAT: %.2f SEK%n", artikel.getVAT());
+        System.out.println("Mängd av vara: " + såldArtikel.getMängdSålt());
     }
 
-    /**
-     * Meddelar att försäljningen har avslutats.
-     */
-    public void avslutaFörsäljning(){
-        System.out.println("Försäljning avslutad.");
+    private void visaTotalPris(SkanningsDTO säljinformation){
+        System.out.println();
+        System.out.printf("Totala kostnaden: %.2f SEK%n", säljinformation.getTotalPris());
+        System.out.printf("Totala VAT: %.2f SEK%n", säljinformation.getVAT());
     }
 
-    /**
-     * Meddelar att ingen rabatt tillämpades på köpet.
-     */
-    public void ingenRabatt(){
-        System.out.println("Ingen rabatt tillämpad.");  
+    private void betala(float belopp){
+        Kvitto kvitto = kontroller.betala(belopp);
+        visaKvitto(kvitto);
     }
 
-    /**
-     * Skriver ut vilken rabatt som tillämpades på köpet.
-     * 
-     * @param rabatt Rabatten i kronor
-     */
-    public void skrivUtRabatt(float rabatt){
-        System.out.println("Rabatt tillämpad: -" + rabatt + " kr");
-    }
+    private void visaKvitto(Kvitto kvitto){
+        System.out.println("-----KVITTO------\n");
 
-     /**
-     * Skriver ut kvittoinformation på konsolen.
-     * Den här metoden kan modifieras för att skriva ut till andra enheter, 
-     * exempelvis en fysisk skrivare om det behövs i framtiden.
-     * 
-     * @param kvitto Kvittoobjekt som innehåller försäljningsinformation.
-     * @throws IllegalArgumentException Om kvitto är null.
-     */
-    public void skrivUtKvitto(Kvitto kvitto) {
-        if (kvitto == null) {
-            throw new IllegalArgumentException("Kvitto kan inte vara null.");
+        for(SåldArtikel artikel : kvitto.getSåldaArtiklar()){
+            String namn = artikel.getArtikelDTO().getnamn();
+            float pris = artikel.getArtikelDTO().getartikelPris();
+            int mängd = artikel.getMängdSålt();
+            float vat = artikel.getArtikelDTO().getVAT();
+            float totalPris = pris * mängd;
+
+            System.out.printf("%s x%d  %.2f kr (VAT %.0f%%)%n", namn, mängd, totalPris, vat);
+
         }
 
-        System.out.println("----- KVITTO -----");
-        System.out.println("Tid: " + kvitto.gettidFörsäljning());  
-        System.out.println("Datum: " + kvitto.getdatum());           
-        System.out.println("Artiklar: " + kvitto.getlistaAvArtiklar()); 
-        System.out.println("Totalpris: " + kvitto.gettotalPris() + " SEK"); 
-        System.out.println("Rabatt: -" + kvitto.getrabatt() + " kr");  
-        System.out.println("Moms: " + kvitto.gettotalVat() + " SEK");   
-        System.out.println("Betalat: " + kvitto.getbetalatBelopp() + " SEK"); 
-        System.out.println("Växel: " + kvitto.getväxel() + " SEK");     
-        System.out.println("------------------");
+        System.out.println("-------------------");
+        System.out.printf("Total VAT: %.2f kr%n", kvitto.getTotalVAT());
+        System.out.printf("Total kostnad: %.2f kr%n", kvitto.getTotalPris());
+        System.out.println("-------------------\n");
     }
 
-   /**
- * Visar ett användarvänligt felmeddelande i konsolen och loggar det till fil.
- *
- * @param meddelande Felmeddelande till användaren.
- */
-  public void skrivFelmeddelandeTillAnvändare(String meddelande, Exception e) {
-    System.out.println("FEL: " + meddelande);
-    logger.log(meddelande);
-    logger.logException(e);
-}
+
+
+
+    
+
 
 }

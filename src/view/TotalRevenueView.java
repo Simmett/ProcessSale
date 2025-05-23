@@ -11,6 +11,18 @@ import model.RevenueObserver;
  */
 public class TotalRevenueView implements RevenueObserver {
 
+    private double totalRevenue = 0;
+    private static final TotalRevenueView TOTAL_REVENUE_VIEW = new TotalRevenueView();
+    
+    private TotalRevenueView(){
+        
+    }
+    
+    public static TotalRevenueView getTotalRevenueView(){
+        return TOTAL_REVENUE_VIEW;
+    }
+    
+
     /**
      * Anropas när den totala intäkten uppdateras.
      * 
@@ -19,7 +31,8 @@ public class TotalRevenueView implements RevenueObserver {
      * @param totalRevenue Den uppdaterade totala intäkten sedan programmet startades.
      */
     @Override
-    public void newRevenue(double totalRevenue) {
+    public void newRevenue(double revenue) {
+        totalRevenue += revenue;
         System.out.println("-----------TOTALA INTÄKTER------------");
         System.out.printf("Totala intäkten sen programmet startades: %.2f SEK %n", totalRevenue);
         System.out.println("-----------------------------\n");

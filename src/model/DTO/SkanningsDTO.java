@@ -1,5 +1,10 @@
 package model.DTO;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import model.SåldArtikel;
+
 /**
  * SkanningsDTO representerar data som genereras vid skanning av en artikel i en försäljningsprocess.
  * Denna klass fungerar som en Data Transfer Object (DTO) och innehåller information om 
@@ -9,81 +14,46 @@ package model.DTO;
  */
 
 public class SkanningsDTO {
-    private String artikelID;
-    private float artikelPris;
-    private int VAT;
-    private String artikelBeskrivning;
-    private int antalAvArtikel;
-    private String artikelNamn;
+    private final LocalDateTime tid;
+    private final float VAT;
+    private final float totalPris;
+    private final List<SåldArtikel> listaMedSåldaArtiklar;
 
     /**
-     * Konstruktor för att skapa ett SkanningsDTO-objekt.
-     * @param artikelID Artikelns ID
-     * @param VAT Moms för artikeln
-     * @param artikelPris Pris för artikeln
-     * @param artikelBeskrivning Beskrivning av artikeln
-     * @param antalAvArtikel Antal artiklar som registrerats
-     * @param artikelNamn Namn på artikeln
+     * Creates a new instance representing a sale.
+     * @param soldItems         Contains sold items and their quantity
+     * @param time              Time of sale
+     * @param vat               Total VAT for the sale
+     * @param totalPrice        Total cost/price for the sale
+     * @param discountAmount    Discount deducted from sale
      */
-    public SkanningsDTO(String artikelID,
-                        int VAT,
-                        float artikelPris,
-                        String artikelBeskrivning,
-                        int antalAvArtikel,
-                        String artikelNamn) {
-        this.artikelID = artikelID;
+    public SkanningsDTO(List<SåldArtikel> såldaArtiklar, LocalDateTime tid, float VAT, float totalPris) {
+        this.listaMedSåldaArtiklar = såldaArtiklar;
+        this.tid = tid;
         this.VAT = VAT;
-        this.artikelPris = artikelPris;
-        this.artikelBeskrivning = artikelBeskrivning;
-        this.antalAvArtikel = antalAvArtikel;
-        this.artikelNamn = artikelNamn;
+        this.totalPris = totalPris;
     }
-
-    /**
-     * Hämtar artikelns ID.
-     * @return Artikelns ID
-     */
-    public String getArtikelID() {
-        return artikelID;
+    
+    public float getTotalPris(){
+        return totalPris;
     }
-
-    /**
-     * Hämtar artikelns pris.
-     * @return Artikelns pris
-     */
-    public float getArtikelPris() {
-        return artikelPris;
-    }
-
-    /**
-     * Hämtar moms (VAT) för artikeln.
-     * @return Moms för artikeln
-     */
-    public int getVAT() {
+    
+    public float getVAT(){
         return VAT;
     }
-
-    /**
-     * Hämtar artikelns beskrivning.
-     * @return Artikelns beskrivning
-     */
-    public String getArtikelBeskrivning() {
-        return artikelBeskrivning;
+    
+    public List<SåldArtikel> getSåldaArtiklar(){
+        return listaMedSåldaArtiklar;
     }
-
-    /**
-     * Hämtar antal artiklar som registrerats.
-     * @return Antal av artikeln
-     */
-    public int getAntalAvArtikel() {
-        return antalAvArtikel;
+    
+    public SåldArtikel getSenasteSåldaArtikel(){
+        if(listaMedSåldaArtiklar == null || listaMedSåldaArtiklar.isEmpty()){
+            return null;
+        }
+        return listaMedSåldaArtiklar.get(listaMedSåldaArtiklar.size()-1);
     }
-
-    /**
-     * Hämtar artikelns namn.
-     * @return Artikelns namn
-     */
-    public String getArtikelNamn() {
-        return artikelNamn;
-    }
+    
+    public LocalDateTime getTid(){
+        return tid;
+    }    
 }

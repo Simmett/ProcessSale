@@ -1,8 +1,12 @@
 package startup;
 
+import java.io.IOException;
 import controller.Kontroller;
-import util.TotalRevenueFileOutput;
-import view.TotalRevenueView;
+import view.View;
+import integration.ArtikelRegister;
+import integration.BokföringsRegister;
+import integration.Printer;
+
 
 /**
  * Main-klassen representerar startpunkten för POS-applikationen.
@@ -21,12 +25,22 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        Kontroller controller = new Kontroller();  
-
-        controller.addRevenueObserver(new TotalRevenueView());
-        controller.addRevenueObserver(new TotalRevenueFileOutput());
+        ArtikelRegister artikelRegister = ArtikelRegister.getArtikelRegister();
+        Printer printer = new Printer();
+        BokföringsRegister bokföringsRegister = BokföringsRegister.getBokföringsRegister();
         
-        controller.hanteraKassaFlöde();  
+        Kontroller kontroller = new Kontroller(bokföringsRegister, artikelRegister, printer);
+
+        try{
+            View view = new View(kontroller);
+            view.körFörsäljning();
+        }
+        catch(IOException exc){
+            System.out.println("Kan inte starta programmet ");
+            exc.printStackTrace();
+        }
+    
+    
 
     }
 }

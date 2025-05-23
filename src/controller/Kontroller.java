@@ -1,19 +1,18 @@
 package controller;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import model.KassaRegister;
-import model.RevenueNotifier;
 import model.RevenueObserver;
 import integration.ArtikelFinnsInteException;
-import integration.Kassa;
-import view.View;
 import model.DTO.Kvitto;
-import integration.RabattSystem;
-import integration.LagerData;
+import model.DTO.SkanningsDTO;
 import integration.LagerDatabasException;
 import model.DTO.ArtikelDTO;
+import integration.Printer;
+import integration.ArtikelRegister;
+import integration.BokföringsRegister;
+import model.Försäljning;
 
 /**
  * Kontroller-klassen hanterar logiken för hela kassaflödet.
@@ -21,100 +20,61 @@ import model.DTO.ArtikelDTO;
  * Klassen är navet för att initiera och genomföra en försäljning.
  */
 public class Kontroller {
-    private RabattSystem rabattSystem = new RabattSystem();
-    private Kassa kassa = new Kassa();
-    private View view = new View();
-    private KassaRegister kassaRegister = new KassaRegister(kassa);
-    private LagerData lagerData = new LagerData();
-    private final RevenueNotifier revenueNotifier = new RevenueNotifier();
+    private ArtikelRegister artikelRegister;
+    private Printer printer;
+    private KassaRegister kassaRegister;
+    private Försäljning försäljning;
+    private List<RevenueObserver> revenueObservers = new ArrayList<>();
+    private BokföringsRegister bokföringsRegister;
 
-    /**
-     * Hanterar hela kassa-flödet, inklusive att sätta tid för försäljning, 
-     * lägga till artiklar, tillämpa rabatt, beräkna växel och skriva ut kvitto.
-     * Metoden styr hela processen från att starta försäljningen till att avsluta den.
-     */
-    public void hanteraKassaFlöde() {
-        LocalTime tid = kassaRegister.setTimeOfSale();
-        view.startaFörsäljning(tid);
-
-        List<ArtikelDTO> artikelInformation = view.artikelInformation();
-
-        läggTillArtiklar(artikelInformation);
-
-        int kundID = view.kundID();
-
-        float nyttpris = flaggaRabatt(kundID);
-
-        float betalatBelopp = view.betalatBelopp();
-
-        float växel = processSale(nyttpris, betalatBelopp);
-
-        revenueNotifier.notifyObservers(nyttpris);
-
-        Kvitto kvitto = skapaKvitto(betalatBelopp, nyttpris, växel);
-
-        kassa.uppdateraKassaSaldo(växel);
-
-        lagerData.uppdateraLager(kvitto);
-
-        kassaRegister.försäljningsAvslut(nyttpris);
-
-        view.skrivUtKvitto(kvitto);
-
-        view.avslutaFörsäljning();
+    public Kontroller(BokföringsRegister bokföring, ArtikelRegister artikelRegister, Printer printer){
+        this.artikelRegister = artikelRegister;
+        this.kassaRegister = new KassaRegister(0);
+        this.printer = printer;
+        this.bokföringsRegister = bokföring;
     }
 
-    private float processSale(float nyttPris, float betalatBelopp) {
-        float växel = kassaRegister.beräknaVäxel(betalatBelopp, nyttPris);
-        view.skrivUtVäxel(växel);
-        return växel;
+    public void startaFörsäljning(){
+        försäljning = new Försäljning();
+        försäljning.addRevenueObservers(revenueObservers);
     }
 
-    private float flaggaRabatt(int kundID) {
-        float totalPris = (float) kassaRegister.getTotalPris(); 
-        float nyttPris = rabattSystem.rabattKontroll(totalPris, kundID); 
-    
-        float rabatt = totalPris - nyttPris;
-        if (rabatt > 0) {
-            view.skrivUtRabatt(rabatt);
-        } else {
-            view.ingenRabatt();
+    public SkanningsDTO skannaArtikel(int artikelID) throws ArtikelFinnsInteException, SystemOperationFailureException{
+        try {
+            ArtikelDTO artikelDTO = artikelRegister.hämtaArtikelBeskrivning(artikelID);
+            försäljning.läggTillArtiklar(artikelDTO);
+            return försäljning.getSkanningsDTO();
+        } catch (LagerDatabasException exc){
+            throw new SystemOperationFailureException("Kan inte nå lagerdatabasen", exc);
         }
-    
-        return nyttPris;
+
     }
 
-    private Kvitto skapaKvitto(float betalatBelopp, float nyttPris, float växel) {
-        float totalPris = (float) kassaRegister.getTotalPris();
-        LocalDate datum = LocalDate.now();
-        float rabatt = totalPris - nyttPris;
-        LocalTime tidförsäljning = LocalTime.now();
-
-        return new Kvitto(tidförsäljning, totalPris, kassaRegister.calculateTotalVAT(),
-                          betalatBelopp, kassaRegister.artiklarSomString(), växel,
-                          datum, nyttPris, rabatt);
+    public SkanningsDTO angeMängd(int mängd){
+        försäljning.justeraMängdAvSenasteArtikel(mängd);
+        SkanningsDTO nuvarandeSkanningsDTO = försäljning.getSkanningsDTO();
+        return nuvarandeSkanningsDTO;
     }
 
-    private void läggTillArtiklar(List<ArtikelDTO> artikelLista) {
-        for (ArtikelDTO artikelDTO : artikelLista) {
-                try {
-                kassaRegister.artikelIDOchAntal(artikelDTO.getartikelID(), artikelDTO.getantalAvArtikel());
-                } catch (LagerDatabasException e) {
-                view.skrivFelmeddelandeTillAnvändare("Databasen kunde inte kontaktas. Försök igen senare.", e);
-                } catch (ArtikelFinnsInteException e) {
-                view.skrivFelmeddelandeTillAnvändare("Artikeln med ID " + artikelDTO.getartikelID() + " finns inte i systemet.", e);
-            }
-        }
+    public SkanningsDTO avslutaFörsäljning(){
+        SkanningsDTO skanningsDTO = försäljning.getSkanningsDTO();
+        return skanningsDTO;
     }
-    /**
-     * Lägger till en observerare som ska notifieras vid uppdatering av total intäkt.
-     * 
-     * Denna metod vidarebefordrar observeraren till {@code KassaRegister} där observermönstret hanteras.
-     *
-     * @param observer En instans som implementerar {@link RevenueObserver} och ska notifieras om ny totalintäkt.
-     */
+
+    public Kvitto betala(float belopp){
+        Kvitto kvitto = försäljning.betala(belopp);
+        SkanningsDTO skanningsDTO = försäljning.getSkanningsDTO();
+        artikelRegister.uppdateraLager(skanningsDTO);
+        kassaRegister.uppdateraKassaSaldo(belopp);
+        bokföringsRegister.bokföra(kvitto);
+        printer.skrivUtKvitto(kvitto);
+        return kvitto;
+    }
+
     public void addRevenueObserver(RevenueObserver observer){
-    kassaRegister.addRevenueObserver(observer);
+        revenueObservers.add(observer);
     }
+
+
 
 }

@@ -4,25 +4,23 @@ package integration;
  * Denna exception kastas när en artikel med ett angivet ID inte finns i lagret.
  */
 public class ArtikelFinnsInteException extends Exception {
-
-    private final String artikelID;
-
+     private final int artikelID;
+    
     /**
-     * Skapar en ny instans av undantaget med ett felmeddelande som beskriver felet.
-     *
-     * @param artikelID Det artikel-ID som inte kunde hittas.
+     * Creates a new instance with a message specifying 
+     * the itemID that is not in the inventory.
+     * @param artikelID        The itemID not found in the inventory.
      */
-    public ArtikelFinnsInteException(String artikelID) {
-        super("Artikel med ID \"" + artikelID + "\" finns inte.");
+    public ArtikelFinnsInteException(int artikelID){
+        super("Item with Item ID: " + artikelID + " not found in the inventory");
         this.artikelID = artikelID;
     }
 
     /**
-     * Hämtar det artikel-ID som inte kunde hittas.
-     *
-     * @return Det saknade artikel-ID:t.
+     * 
+     * @return      The itemID not found in the inventory.
      */
-    public String getArtikelID() {
-        return artikelID;
+    public int hämtaFelArtikelID(){
+        return this.artikelID;
     }
 }

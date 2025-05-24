@@ -20,8 +20,7 @@ public class Kvitto {
     private float totalVAT;
     private List<SåldArtikel> listaMedArtiklar;
     private float betalatBelopp;
-    private float växel;
-    private float rabatt;      
+    private float växel;    
     
         /**
      * Skapar ett Kvitto-objekt med all nödvändig information om en försäljning.

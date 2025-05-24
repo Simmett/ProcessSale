@@ -7,7 +7,7 @@ public class Betalning{
      * Creates an instance of a payment.
      * @param belopp      The amount paid.
      */
-    Betalning (float belopp) {
+    public Betalning (float belopp) {
         this.belopp = belopp;
     }
     

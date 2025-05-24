@@ -62,7 +62,7 @@ public class ArtikelRegister {
         }
     }
 
-    ArtikelILager hämtaArtikelMedID(int artikelID){
+    public ArtikelILager hämtaArtikelMedID(int artikelID){
         for(ArtikelILager artikel : lager){
             if(artikel.getArtikel().matcharArtikelID(artikelID)){
                 return artikel;

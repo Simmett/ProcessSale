@@ -1,57 +1,66 @@
 package test.integration;
 
-import model.DTO.ArtikelDTO;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-import integration.ArtikelRegister;
 import integration.ArtikelFinnsInteException;
 import integration.LagerDatabasException;
-/**
- * Testklass för ArtikelRegister.
- */
-public class ArtikelRegisterTest {
+import integration.ArtikelRegister;
 
-    private ArtikelRegister artikelRegister;
+import model.DTO.SkanningsDTO;
+import model.SåldArtikel;
+import org.junit.jupiter.api.Test;
 
-    @BeforeEach
-    public void setUp() {
-        artikelRegister = new ArtikelRegister();
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class ArtikelRegisterTest {
+
+    ArtikelRegister register = ArtikelRegister.getArtikelRegister();
+
+    @Test
+    void hämtaArtikelBeskrivning_returnerarArtikel() throws ArtikelFinnsInteException {
+        var artikel = register.hämtaArtikelBeskrivning(123);
+        assertEquals("BigWheel Oatmeal", artikel.getnamn());
     }
 
     @Test
-    public void testHamtaArtikelInformation_abc123() throws ArtikelFinnsInteException {
-        ArtikelDTO artikel = artikelRegister.hämtaArtikelInformation("abc123", 2);
-        assertEquals("abc123", artikel.getartikelID());
-        assertEquals("BigWheel Oatmeal", artikel.getArtikelNamn());
-        assertEquals(29.90, artikel.getartikelPris());
-        assertEquals(6, artikel.getVAT());
-        assertEquals("BigWheel Oatmeal 500 g, whole grain oats, high fiber, gluten free", artikel.getartikelBeskrivning());
-        assertEquals(2, artikel.getantalAvArtikel());
+    void hämtaArtikelBeskrivning_kastarExceptionOmIDInteFinns() {
+        assertThrows(ArtikelFinnsInteException.class, () -> register.hämtaArtikelBeskrivning(9999));
     }
 
     @Test
-    public void testHamtaArtikelInformation_def456() throws ArtikelFinnsInteException {
-        ArtikelDTO artikel = artikelRegister.hämtaArtikelInformation("def456", 1);
-        assertEquals("def456", artikel.getartikelID());
-        assertEquals("YouGoGo Blueberry", artikel.getArtikelNamn());
-        assertEquals(14.90, artikel.getartikelPris());
-        assertEquals(6, artikel.getVAT());
-        assertEquals("YouGoGo Blueberry 240 g, low sugar yoghurt, blueberry flavour", artikel.getartikelBeskrivning());
-        assertEquals(1, artikel.getantalAvArtikel());
+    void hämtaArtikelBeskrivning_kastarDatabasException() {
+        assertThrows(LagerDatabasException.class, () -> register.hämtaArtikelBeskrivning(999));
     }
 
     @Test
-    public void testHamtaArtikelInformation_invalidID_throwsArtikelFinnsInteException() {
-        assertThrows(ArtikelFinnsInteException.class, () -> {
-            artikelRegister.hämtaArtikelInformation("invalidID", 1);
-        });
+    void uppdateraLager_minskarMängd() throws ArtikelFinnsInteException {
+        var artikel = register.hämtaArtikelBeskrivning(123);
+        int före = register.hämtaArtikelMedID(123).getMängd();
+
+        var såld = new SåldArtikel(artikel);
+        såld.läggTillBelopp(4);
+
+        var skanning = new SkanningsDTO(
+        List.of(såld),
+        java.time.LocalDateTime.now(),
+        artikel.getVAT() * 5 / 100,     
+        artikel.getartikelPris() * 5   
+    );
+
+    register.uppdateraLager(skanning);
+
+    int efter = register.hämtaArtikelMedID(123).getMängd();
+    assertEquals(före - 5, efter);
+}
+
+
+    @Test
+    void uppdateraLager_medNull_krascharInte() {
+        assertDoesNotThrow(() -> register.uppdateraLager(null));
     }
 
     @Test
-    public void testHamtaArtikelInformation_dbError_throwsLagerDatabasException() {
-        assertThrows(LagerDatabasException.class, () -> {
-            artikelRegister.hämtaArtikelInformation("999", 1);
-        });
+    void hämtaArtikelMedID_returnerarNullOmEjFinns() {
+        assertNull(register.hämtaArtikelMedID(7777));
     }
 }

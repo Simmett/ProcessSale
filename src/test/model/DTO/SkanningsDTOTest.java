@@ -1,34 +1,40 @@
 package test.model.DTO;
 
+import model.DTO.*;
+import model.SåldArtikel;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
-import model.DTO.SkanningsDTO;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SkanningsDTOTest {
 
     @Test
-    void testConstructorAndGetters() {
-       
-        String artikelID = "A123";
-        int vat = 12;
-        float pris = 29.90f;
-        String beskrivning = "Ekologisk havregryn 1kg";
-        int antal = 2;
-        String namn = "BigWheel Oatmeal";
+    void getterMetoder_returnerarKorrektData() {
+        LocalDateTime tid = LocalDateTime.now();
+        SåldArtikel artikel = new SåldArtikel(new ArtikelDTO("Test", 1, 10f, 25f));
+        artikel.läggTillBelopp(1); // totalt 2 sålda
 
-     
-        SkanningsDTO dto = new SkanningsDTO(artikelID, vat, pris, beskrivning, antal, namn);
+        SkanningsDTO dto = new SkanningsDTO(List.of(artikel), tid, 5f, 20f);
 
-        
-        assertEquals(artikelID, dto.getArtikelID());
-        assertEquals(vat, dto.getVAT());
-        assertEquals(pris, dto.getArtikelPris());
-        assertEquals(beskrivning, dto.getArtikelBeskrivning());
-        assertEquals(antal, dto.getAntalAvArtikel());
-        assertEquals(namn, dto.getArtikelNamn());
+        assertEquals(20f, dto.getTotalPris());
+        assertEquals(5f, dto.getVAT());
+        assertEquals(1, dto.getSåldaArtiklar().size());
+        assertEquals(artikel, dto.getSenasteSåldaArtikel());
+        assertEquals(tid, dto.getTid());
+    }
+
+    @Test
+    void getSenasteSåldaArtikel_returnerarNullOmListaTom() {
+        SkanningsDTO dto = new SkanningsDTO(List.of(), LocalDateTime.now(), 0f, 0f);
+        assertNull(dto.getSenasteSåldaArtikel());
+    }
+
+    @Test
+    void getSenasteSåldaArtikel_returnerarNullOmListaÄrNull() {
+        SkanningsDTO dto = new SkanningsDTO(null, LocalDateTime.now(), 0f, 0f);
+        assertNull(dto.getSenasteSåldaArtikel());
     }
 }
-
-

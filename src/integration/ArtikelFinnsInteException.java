@@ -12,7 +12,7 @@ public class ArtikelFinnsInteException extends Exception {
      * @param artikelID        The itemID not found in the inventory.
      */
     public ArtikelFinnsInteException(int artikelID){
-        super("Item with Item ID: " + artikelID + " not found in the inventory");
+        super("Artikel med ID: " + artikelID + " hittades inte i lagret");
         this.artikelID = artikelID;
     }
 

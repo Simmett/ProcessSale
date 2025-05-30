@@ -15,7 +15,7 @@ class KvittoTest {
 
     @Test
     void kvittoInitierarFältKorrekt() {
-        // Arrange
+       
         ArtikelDTO artikel = new ArtikelDTO("Choklad", 1, 20f, 6f);
         SåldArtikel såldArtikel = new SåldArtikel(artikel);
         såldArtikel.läggTillBelopp(1); // totalt 2
@@ -24,10 +24,10 @@ class KvittoTest {
         SkanningsDTO skanning = new SkanningsDTO(List.of(såldArtikel), tid, 3f, 40f);
         Betalning betalning = new Betalning(50f);
 
-        // Act
+        
         Kvitto kvitto = new Kvitto(skanning, betalning);
 
-        // Assert
+      
         assertEquals(40f, kvitto.getTotalPris());
         assertEquals(3f, kvitto.getTotalVAT());
         assertEquals(50f, kvitto.getBetalatBelopp());

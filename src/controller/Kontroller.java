@@ -27,6 +27,13 @@ public class Kontroller {
     private List<RevenueObserver> revenueObservers = new ArrayList<>();
     private BokföringsRegister bokföringsRegister;
 
+    /**
+     * Skapar en ny Kontroller-instans med de nödvändiga beroendena.
+     * 
+     * @param bokföring       Bokföringssystemet som ska användas.
+     * @param artikelRegister  Register med artikelinformation.
+     * @param printer         Printer för utskrift av kvitton.
+     */
     public Kontroller(BokföringsRegister bokföring, ArtikelRegister artikelRegister, Printer printer){
         this.artikelRegister = artikelRegister;
         this.kassaRegister = new KassaRegister(0);
@@ -34,11 +41,22 @@ public class Kontroller {
         this.bokföringsRegister = bokföring;
     }
 
+    /**
+     * Startar en ny försäljning.
+     */
     public void startaFörsäljning(){
         försäljning = new Försäljning();
         försäljning.addRevenueObservers(revenueObservers);
     }
 
+    /**
+     * Skannar en artikel baserat på dess ID.
+     * 
+     * @param artikelID ID för artikeln som ska skannas.
+     * @return En DTO med aktuell försäljningsinformation efter skanningen.
+     * @throws ArtikelFinnsInteException Om artikeln inte finns i registret.
+     * @throws SystemOperationFailureException Om ett systemfel uppstår, exempelvis databasfel.
+     */
     public SkanningsDTO skannaArtikel(int artikelID) throws ArtikelFinnsInteException, SystemOperationFailureException{
         try {
             ArtikelDTO artikelDTO = artikelRegister.hämtaArtikelBeskrivning(artikelID);
@@ -47,20 +65,34 @@ public class Kontroller {
         } catch (LagerDatabasException exc){
             throw new SystemOperationFailureException("Kan inte nå lagerdatabasen", exc);
         }
-
     }
 
+    /**
+     * Anger mängd för den senaste skannade artikeln.
+     * 
+     * @param mängd Den mängd som ska sättas.
+     * @return En DTO med aktuell försäljningsinformation efter uppdateringen.
+     */
     public SkanningsDTO angeMängd(int mängd){
         försäljning.justeraMängdAvSenasteArtikel(mängd);
-        SkanningsDTO nuvarandeSkanningsDTO = försäljning.getSkanningsDTO();
-        return nuvarandeSkanningsDTO;
+        return försäljning.getSkanningsDTO();
     }
 
+    /**
+     * Avslutar försäljningen och returnerar en DTO med försäljningsinformationen.
+     * 
+     * @return En DTO med aktuell försäljningsinformation.
+     */
     public SkanningsDTO avslutaFörsäljning(){
-        SkanningsDTO skanningsDTO = försäljning.getSkanningsDTO();
-        return skanningsDTO;
+        return försäljning.getSkanningsDTO();
     }
 
+    /**
+     * Hanterar betalning för försäljningen, uppdaterar lager och kassa, bokför samt skriver ut kvitto.
+     * 
+     * @param belopp Det belopp kunden betalar.
+     * @return Ett kvitto för försäljningen.
+     */
     public Kvitto betala(float belopp){
         Kvitto kvitto = försäljning.betala(belopp);
         SkanningsDTO skanningsDTO = försäljning.getSkanningsDTO();
@@ -71,10 +103,12 @@ public class Kontroller {
         return kvitto;
     }
 
+    /**
+     * Lägger till en RevenueObserver som observerar totalomsättning.
+     * 
+     * @param observer Observer som ska läggas till.
+     */
     public void addRevenueObserver(RevenueObserver observer){
         revenueObservers.add(observer);
     }
-
-
-
 }

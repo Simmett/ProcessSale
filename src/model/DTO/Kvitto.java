@@ -5,15 +5,16 @@ import java.util.List;
 
 import model.SåldArtikel;
 import model.Betalning;
-/**
- * Kvitto representerar ett kvitto för en genomförd försäljning. 
- * Det innehåller detaljer såsom tid och datum för försäljningen, 
- * totalpris före och efter rabatt, total moms, betalat belopp, 
- * lista av sålda artiklar, växel samt eventuell rabatt.
- * 
- * Används som en Data Transfer Object (DTO) mellan modell och presentation.
- */
 
+/**
+ * Kvitto representerar ett kvitto för en genomförd försäljning.
+ * 
+ * Klassen innehåller detaljer såsom tidpunkt för försäljningen, totalpris,
+ * total moms, betalat belopp, lista över sålda artiklar samt växel.
+ * 
+ * Används som ett Data Transfer Object (DTO) för att överföra försäljningsinformation
+ * från modell till presentation.
+ */
 public class Kvitto {
     private LocalDateTime tidFörsäljning;         
     private float totalPris; 
@@ -22,40 +23,33 @@ public class Kvitto {
     private float betalatBelopp;
     private float växel;    
     
-        /**
+    /**
      * Skapar ett Kvitto-objekt med all nödvändig information om en försäljning.
-     *
-     * @param tidsförsäljning Tiden då försäljningen ägde rum
-     * @param totalpris Det totala priset före eventuell rabatt
-     * @param totalVat Den totala momsen för försäljningen
-     * @param betalatBelopp Det belopp kunden betalade
-     * @param listaAvArtiklar En textrepresentation av alla artiklar i försäljningen
-     * @param växel Den växel som ska ges tillbaka till kunden
-     * @param datum Datum för försäljningen
-     * @param nyttPris Priset efter att rabatt har tillämpats
-     * @param rabatt Den rabatt som har dragits från totalpriset
+     * 
+     * @param skanningsDTO DTO som innehåller försäljningsdata inklusive sålda artiklar, tid, pris och moms
+     * @param betalning    Betalningsinformation som innehåller det betalda beloppet
      */
-
-
-    public Kvitto (SkanningsDTO skanningsDTO, Betalning betalning){
+    public Kvitto(SkanningsDTO skanningsDTO, Betalning betalning){
         this.totalPris = skanningsDTO.getTotalPris();
         this.betalatBelopp = betalning.getBelopp();
         this.totalVAT = skanningsDTO.getVAT();
         this.listaMedArtiklar = skanningsDTO.getSåldaArtiklar();
         this.tidFörsäljning = skanningsDTO.getTid();
         beräknaVäxel();
-
-
-    }
-
-    private void beräknaVäxel(){
-        float växel = totalPris - betalatBelopp;
-        this.växel = växel;
     }
 
     /**
-     * Hämtar tiden för försäljningen.
-     * @return Tiden för försäljningen
+     * Beräknar växeln som ska ges tillbaka till kunden.
+     * Växeln är skillnaden mellan betalat belopp och totalpris.
+     */
+    private void beräknaVäxel(){
+        this.växel = betalatBelopp - totalPris;
+    }
+
+    /**
+     * Hämtar tiden då försäljningen ägde rum.
+     * 
+     * @return Tidpunkten för försäljningen
      */
     public LocalDateTime getTidFörsäljning() {
         return tidFörsäljning;
@@ -63,7 +57,8 @@ public class Kvitto {
 
     /**
      * Hämtar det totala priset för försäljningen.
-     * @return Det totala priset
+     * 
+     * @return Det totala priset inklusive moms
      */
     public float getTotalPris() {
         return totalPris;
@@ -71,7 +66,8 @@ public class Kvitto {
 
     /**
      * Hämtar den totala momsen för försäljningen.
-     * @return Den totala momsen
+     * 
+     * @return Den totala momsen (VAT)
      */
     public float getTotalVAT() {
         return totalVAT;
@@ -79,6 +75,7 @@ public class Kvitto {
 
     /**
      * Hämtar det belopp som kunden har betalat.
+     * 
      * @return Det betalda beloppet
      */
     public float getBetalatBelopp() {
@@ -86,8 +83,9 @@ public class Kvitto {
     }
 
     /**
-     * Hämtar listan av artiklar som köpts under försäljningen.
-     * @return Listan av artiklar
+     * Hämtar listan av sålda artiklar under försäljningen.
+     * 
+     * @return Listan av sålda artiklar
      */
     public List<SåldArtikel> getSåldaArtiklar() {
         return listaMedArtiklar;
@@ -95,6 +93,7 @@ public class Kvitto {
 
     /**
      * Hämtar växeln som ska ges tillbaka till kunden.
+     * 
      * @return Växeln
      */
     public float getVäxel() {

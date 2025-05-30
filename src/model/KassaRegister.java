@@ -10,25 +10,36 @@ package model;
  * - Sammanställa artikellista till kvittot
  * - Hantera tidsstämpling av försäljningen
  * 
- * Klassen fungerar som en central nod i modellen (MVC) och använder både ArtikelRegister och Kassa.
  */
-
 public class KassaRegister {
     
     private float kassaSaldo;
 
-    public KassaRegister (float belopp){
+    /**
+     * Skapar ett nytt KassaRegister med ett initialt kassasaldo.
+     * 
+     * @param belopp Startbelopp för kassasaldot.
+     */
+    public KassaRegister(float belopp){
         this.kassaSaldo = belopp;
     }
 
+    /**
+     * Uppdaterar kassasaldot med ett angivet belopp.
+     * Kan användas för att lägga till eller dra ifrån pengar i kassan.
+     * 
+     * @param belopp Belopp att justera kassasaldot med. Positivt för insättning, negativt för uttag.
+     */
     public void uppdateraKassaSaldo(float belopp){
         this.kassaSaldo += belopp;
     }
 
+    /**
+     * Hämtar det aktuella kassasaldot.
+     * 
+     * @return Det aktuella saldot i kassan.
+     */
     public float getSaldo(){
         return kassaSaldo;
     }
-    
-    
-
 }

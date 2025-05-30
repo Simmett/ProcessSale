@@ -1,8 +1,10 @@
 package model.DTO;
 
 /**
- * Contains information about a single item
- *
+ * ArtikelDTO innehåller information om en enskild artikel.
+ * 
+ * Klassen fungerar som ett Data Transfer Object (DTO) för att
+ * överföra artikeldata mellan olika delar av systemet.
  */
 public class ArtikelDTO {
     private final String namn;
@@ -10,13 +12,13 @@ public class ArtikelDTO {
     private final float artikelPris;
     private final float VAT;
 
-    
     /**
-     * Creates a new instance of the object
-     * @param name      The name of the item
-     * @param itemID    The items' identifier
-     * @param price     The price of the item
-     * @param vat       The VAT-rate of the item as a percentage
+     * Skapar en ny instans av ArtikelDTO.
+     * 
+     * @param namn       Artikelns namn
+     * @param artikelID  Artikelns unika identifierare
+     * @param artikelPris Artikelns pris
+     * @param VAT        Artikelns moms (VAT) som procenttal (t.ex. 25.0 för 25%)
      */
     public ArtikelDTO(String namn, int artikelID, float artikelPris, float VAT) {
         this.namn = namn;
@@ -24,27 +26,48 @@ public class ArtikelDTO {
         this.artikelPris = artikelPris;
         this.VAT = VAT;
     }
-    
+
+    /**
+     * Hämtar artikelns namn.
+     * 
+     * @return Artikelns namn
+     */
     public String getnamn(){
         return namn;
     }
-    
+
+    /**
+     * Hämtar artikelns ID.
+     * 
+     * @return Artikelns identifierare
+     */
     public int getartikelID(){
         return artikelID;
     }
-    
+
+    /**
+     * Hämtar artikelns moms (VAT).
+     * 
+     * @return Artikelns moms i procent
+     */
     public float getVAT(){
         return VAT;
     }
-    
+
+    /**
+     * Hämtar artikelns pris.
+     * 
+     * @return Artikelns pris
+     */
     public float getartikelPris(){
         return artikelPris;
     }
-    
+
     /**
-     * Checks if a searched item identifier matches the item identifier of the item.
-     * @param searchedItemID    The item identifier to compare to the object       
-     * @return boolean          true if they are identical, otherwise false
+     * Kontrollerar om ett sökt artikel-ID matchar detta objekts artikel-ID.
+     * 
+     * @param söktArtikelID Artikel-ID som ska jämföras
+     * @return true om artikel-ID är samma, annars false
      */
     public boolean matcharArtikelID(int söktArtikelID){
         return this.artikelID == söktArtikelID;

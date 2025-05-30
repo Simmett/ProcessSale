@@ -1,19 +1,17 @@
 package controller;
 
 /**
- *Thrown when a system operation cant be fulfilled by the controller.
- *
+ * Kastas när en systemoperation inte kan utföras av kontrollern.
  */
-public class SystemOperationFailureException extends Exception{
+public class SystemOperationFailureException extends Exception {
     
     /**
-     * Creates a new instance representing the error described in the specified
-     * message.
-     * @param msg       A message that describes the error
-     * @param cause     The exception that caused the system operation to fail.
+     * Skapar en ny instans som representerar felet beskrivet i det angivna meddelandet.
+     * 
+     * @param msg   Ett meddelande som beskriver felet.
+     * @param cause Den exception som orsakade att systemoperationen misslyckades.
      */
     public SystemOperationFailureException(String msg, Exception cause){
         super(msg, cause);
     }
-    
 }

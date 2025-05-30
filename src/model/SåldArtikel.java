@@ -43,7 +43,7 @@ public class SåldArtikel {
      * Ökar antalet sålda enheter med 1.
      * Denna metod används när samma artikel skannas flera gånger.
      */
-    void ökaMängdSåltMedEn(){
+    public void ökaMängdSåltMedEn(){
         mängdSålt += 1;
     }
 

@@ -129,7 +129,7 @@ public class Försäljning {
 
     }
 
-    private void addRevenueObserver(RevenueObserver observer){
+    public void addRevenueObserver(RevenueObserver observer){
         revenueObservers.add(observer);
     }
  
@@ -144,7 +144,7 @@ public class Försäljning {
             addRevenueObserver(observer);
         }
     }
-    
+
     private void notifyRevenueObservers(){
         for(RevenueObserver observer : revenueObservers){
             observer.newRevenue(nuvarandePris);

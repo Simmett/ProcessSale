@@ -294,3 +294,13 @@ Caused by: integration.LagerDatabasException: Databasen kan inte nås
 	at integration.ArtikelRegister.hämtaArtikelBeskrivning(ArtikelRegister.java:35)
 	at controller.Kontroller.skannaArtikel(Kontroller.java:44)
 	... 3 more
+Exception: controller.SystemOperationFailureException - Kan inte nå lagerdatabasen
+controller.SystemOperationFailureException: Kan inte nå lagerdatabasen
+	at controller.Kontroller.skannaArtikel(Kontroller.java:66)
+	at view.View.skannaArtikel(View.java:58)
+	at view.View.körFörsäljning(View.java:42)
+	at startup.Main.main(Main.java:36)
+Caused by: integration.LagerDatabasException: Databasen kan inte nås
+	at integration.ArtikelRegister.hämtaArtikelBeskrivning(ArtikelRegister.java:49)
+	at controller.Kontroller.skannaArtikel(Kontroller.java:62)
+	... 3 more

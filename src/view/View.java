@@ -37,6 +37,10 @@ public class View {
         kontroller.addRevenueObserver(new TotalRevenueFileOutput());
     }
 
+    /**
+     * Kör en simulerad försäljning med skanning av artiklar, mängdangivelse,
+     * avslutning och betalning.
+     */
     public void körFörsäljning(){
         startaFörsäljning();
         skannaArtikel(ARTIKELID_FINNS_INTE_I_LAGRET);
@@ -46,7 +50,10 @@ public class View {
         avslutaFörsäljning();
         betala(300);
     }
-
+    
+    /**
+     * Startar en ny försäljning genom att anropa kontrollern.
+     */
     public void startaFörsäljning(){
         kontroller.startaFörsäljning();
         System.out.println("Ny försäljning startad!\n");

@@ -16,7 +16,7 @@ import model.Försäljning;
 
 /**
  * Kontroller-klassen hanterar logiken för hela kassaflödet.
- * Den kopplar samman olika delar av systemet, såsom vy, kassa, lager och rabatt.
+ * Den kopplar samman olika delar av systemet, såsom vy, kassa, och lager. 
  * Klassen är navet för att initiera och genomföra en försäljning.
  */
 public class Kontroller {

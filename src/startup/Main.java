@@ -21,7 +21,7 @@ public class Main {
     /**
      * Huvudmetoden som startar applikationen.
      * Skapar nödvändiga objekt och anropar metoden för att hantera kassa-flödet.
-     * @param args Kommando-radsargument (ej använda i denna implementation)
+     * @param args Kommando-radsargument 
      */
     public static void main(String[] args) {
 

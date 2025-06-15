@@ -1,17 +1,12 @@
 package model.DTO;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
 import model.SåldArtikel;
-
 /**
- * SkanningsDTO representerar data som genereras vid skanning av artiklar i en försäljningsprocess.
- * 
- * Klassen fungerar som ett Data Transfer Object (DTO) som överför försäljningsdata
- * mellan modell och vy utan att exponera underliggande affärslogik.
- * Den innehåller information om sålda artiklar, tidpunkt för försäljning,
- * total moms (VAT) samt totalpris.
+ * DTO som används för att förmedla information om pågående försäljning.
+ * Innehåller artiklar, totalpris och moms – i form av affärslogikfria objekt.
  */
 public class SkanningsDTO {
     private final LocalDateTime tid;
@@ -20,12 +15,12 @@ public class SkanningsDTO {
     private final List<SåldArtikel> listaMedSåldaArtiklar;
 
     /**
-     * Skapar ett nytt SkanningsDTO-objekt som representerar en försäljning.
-     * 
-     * @param såldaArtiklar Lista med sålda artiklar och deras mängd.
-     * @param tid Tidpunkten för försäljningen.
-     * @param VAT Total moms för försäljningen.
-     * @param totalPris Total pris för försäljningen inklusive moms.
+     * Skapar ett nytt SkanningsDTO-objekt.
+     *
+     * @param såldaArtiklar Artiklar som har skannats
+     * @param tid           Tidsstämpel för försäljningen
+     * @param VAT           Moms för försäljningen
+     * @param totalPris     Total summa för försäljningen
      */
     public SkanningsDTO(List<SåldArtikel> såldaArtiklar, LocalDateTime tid, float VAT, float totalPris) {
         this.listaMedSåldaArtiklar = såldaArtiklar;
@@ -33,52 +28,56 @@ public class SkanningsDTO {
         this.VAT = VAT;
         this.totalPris = totalPris;
     }
-    
+
     /**
-     * Hämtar det totala priset för försäljningen.
-     * 
-     * @return Det totala priset inklusive moms.
+     * Hämtar försäljningens totalpris.
+     *
+     * @return Totalpris
      */
-    public float getTotalPris(){
+    public float getTotalPris() {
         return totalPris;
     }
-    
+
     /**
-     * Hämtar den totala momsen (VAT) för försäljningen.
-     * 
-     * @return Det totala momsbeloppet.
+     * Hämtar försäljningens totala moms.
+     *
+     * @return Moms i kronor
      */
-    public float getVAT(){
+    public float getVAT() {
         return VAT;
     }
-    
+
     /**
-     * Hämtar listan med sålda artiklar.
-     * 
-     * @return Lista över sålda artiklar och deras antal.
+     * Hämtar tidsstämpel för försäljningen.
+     *
+     * @return Tid som LocalDateTime
      */
-    public List<SåldArtikel> getSåldaArtiklar(){
-        return listaMedSåldaArtiklar;
+    public LocalDateTime getTid() {
+        return tid;
     }
-    
+
     /**
-     * Hämtar den senaste sålda artikeln i listan.
-     * 
-     * @return Den senaste sålda artikeln, eller null om listan är tom.
+     * Hämtar en lista med DTO:er för alla sålda artiklar.
+     *
+     * @return Lista med SåldArtikelDTO
      */
-    public SåldArtikel getSenasteSåldaArtikel(){
-        if(listaMedSåldaArtiklar == null || listaMedSåldaArtiklar.isEmpty()){
+    public List<SåldArtikelDTO> getSåldaArtikelDTOs() {
+        List<SåldArtikelDTO> dtoList = new ArrayList<>();
+        for (SåldArtikel artikel : listaMedSåldaArtiklar) {
+            dtoList.add(artikel.toDTO());
+        }
+        return dtoList;
+    }
+
+    /**
+     * Hämtar den senast skannade artikeln som DTO.
+     *
+     * @return SåldArtikelDTO eller null
+     */
+    public SåldArtikelDTO getSenasteSåldaArtikelDTO() {
+        if (listaMedSåldaArtiklar == null || listaMedSåldaArtiklar.isEmpty()) {
             return null;
         }
-        return listaMedSåldaArtiklar.get(listaMedSåldaArtiklar.size()-1);
+        return listaMedSåldaArtiklar.get(listaMedSåldaArtiklar.size() - 1).toDTO();
     }
-    
-    /**
-     * Hämtar tidpunkten för försäljningen.
-     * 
-     * @return Tidpunkten då försäljningen ägde rum.
-     */
-    public LocalDateTime getTid(){
-        return tid;
-    }    
 }

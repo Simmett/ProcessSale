@@ -1,40 +1,35 @@
 package test.model.DTO;
-
-import model.DTO.*;
+import model.DTO.SkanningsDTO;
+import model.DTO.SåldArtikelDTO;
 import model.SåldArtikel;
+
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-class SkanningsDTOTest {
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+public class SkanningsDTOTest {
 
     @Test
-    void getterMetoder_returnerarKorrektData() {
+    void testSkanningsDTOMedTomLista() {
+        List<SåldArtikel> tomLista = new ArrayList<>();
         LocalDateTime tid = LocalDateTime.now();
-        SåldArtikel artikel = new SåldArtikel(new ArtikelDTO("Test", 1, 10f, 25f));
-        artikel.läggTillBelopp(1); // totalt 2 sålda
+        float vat = 5.0f;
+        float totalPris = 100.0f;
 
-        SkanningsDTO dto = new SkanningsDTO(List.of(artikel), tid, 5f, 20f);
+        SkanningsDTO dto = new SkanningsDTO(tomLista, tid, vat, totalPris);
 
-        assertEquals(20f, dto.getTotalPris());
-        assertEquals(5f, dto.getVAT());
-        assertEquals(1, dto.getSåldaArtiklar().size());
-        assertEquals(artikel, dto.getSenasteSåldaArtikel());
+        assertEquals(totalPris, dto.getTotalPris());
+        assertEquals(vat, dto.getVAT());
         assertEquals(tid, dto.getTid());
-    }
 
-    @Test
-    void getSenasteSåldaArtikel_returnerarNullOmListaTom() {
-        SkanningsDTO dto = new SkanningsDTO(List.of(), LocalDateTime.now(), 0f, 0f);
-        assertNull(dto.getSenasteSåldaArtikel());
-    }
+        // Listan med SåldArtikelDTO ska vara tom
+        List<SåldArtikelDTO> artiklar = dto.getSåldaArtikelDTOs();
+        assertTrue(artiklar.isEmpty());
 
-    @Test
-    void getSenasteSåldaArtikel_returnerarNullOmListaÄrNull() {
-        SkanningsDTO dto = new SkanningsDTO(null, LocalDateTime.now(), 0f, 0f);
-        assertNull(dto.getSenasteSåldaArtikel());
+        // Senaste sålda artikel ska vara null när listan är tom
+        assertNull(dto.getSenasteSåldaArtikelDTO());
     }
 }

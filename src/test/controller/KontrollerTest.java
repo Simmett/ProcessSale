@@ -26,7 +26,7 @@ class KontrollerTest {
     @Test
     void skannaArtikel_returnerarDTO() throws Exception {
         SkanningsDTO dto = kontroller.skannaArtikel(123); 
-        assertFalse(dto.getSåldaArtiklar().isEmpty());
+        assertFalse(dto.getSåldaArtikelDTOs().isEmpty());
     }
 
     @Test
@@ -37,7 +37,7 @@ class KontrollerTest {
     @Test
     void angeMängd_uppdaterarMängd() throws Exception {
         kontroller.skannaArtikel(123);
-        assertEquals(3, kontroller.angeMängd(3).getSåldaArtiklar().get(0));
+        assertEquals(3, kontroller.angeMängd(3).getSåldaArtikelDTOs().get(0));
     }
 
     @Test

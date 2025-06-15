@@ -5,51 +5,54 @@ import java.util.List;
 
 import model.DTO.ArtikelDTO;
 import model.DTO.SkanningsDTO;
-import model.SåldArtikel;
+import model.DTO.SåldArtikelDTO;
+
 
 /**
- * ArtikelRegister ansvarar för att tillhandahålla information om artiklar
- * baserat på deras artikelID. 
- * 
- * Klassen fungerar som ett hårdkodat register över lagerförda artiklar i systemet.
- * Den hanterar även uppdatering av lagersaldo efter försäljning.
+ * ArtikelRegister ansvarar för att hantera åtkomst och uppdatering av artiklar i lagret.
+ * Det implementerar en singletonstruktur och använder DTO för extern kommunikation.
  */
 public class ArtikelRegister {
     private final List<ArtikelILager> lager = new ArrayList<>();
     private static final ArtikelRegister ARTIKEL_REGISTER = new ArtikelRegister();
 
-    private ArtikelRegister(){
+    /**
+     * Privat konstruktor som initialiserar lagret med hårdkodade artiklar.
+     */
+    private ArtikelRegister() {
         läggTillArtiklar();
     }
 
     /**
-     * Hämtar den enda instansen av ArtikelRegister (singleton).
-     * 
+     * Hämtar den enda instansen av ArtikelRegister.
+     *
      * @return Singleton-instansen av ArtikelRegister
      */
-    public static ArtikelRegister getArtikelRegister(){
+    public static ArtikelRegister getArtikelRegister() {
         return ARTIKEL_REGISTER;
     }
 
-    private void läggTillArtiklar(){
-        lager.add(new ArtikelILager(new ArtikelDTO("BigWheel Oatmeal", 123, (float) 29.90, 6), 50 ));
-        lager.add(new ArtikelILager(new ArtikelDTO("YouGoGo BlueBerry", 456, (float) 14.9, 6), 50));
+    /**
+     * Lägger till hårdkodade testartiklar i lagret.
+     */
+    private void läggTillArtiklar() {
+        lager.add(new ArtikelILager(new ArtikelDTO("BigWheel Oatmeal", 123, 29.90f, 6), 50));
+        lager.add(new ArtikelILager(new ArtikelDTO("YouGoGo BlueBerry", 456, 14.90f, 6), 50));
     }
 
     /**
-     * Hämtar artikelinformation baserat på artikelID.
-     * 
-     * @param artikelID ID för artikeln som ska hämtas
-     * @return ArtikelDTO med artikelns data
-     * @throws ArtikelFinnsInteException Om artikeln inte finns i registret
-     * @throws LagerDatabasException Om ett simulerat databasfel uppstår (t.ex. artikelID == 999)
+     * Hämtar artikelbeskrivning från lagret baserat på ID.
+     *
+     * @param artikelID Artikelns ID
+     * @return ArtikelDTO med artikelns information
+     * @throws ArtikelFinnsInteException Om artikel-ID:t inte finns
      */
     public ArtikelDTO hämtaArtikelBeskrivning(int artikelID) throws ArtikelFinnsInteException {
-        if(artikelID == 999){
+        if (artikelID == 999) {
             throw new LagerDatabasException("Databasen kan inte nås");
         }
-        for(ArtikelILager artikelILager : lager){
-            if(artikelILager.getArtikel().matcharArtikelID(artikelID)){
+        for (ArtikelILager artikelILager : lager) {
+            if (artikelILager.getArtikel().matcharArtikelID(artikelID)) {
                 return artikelILager.getArtikel();
             }
         }
@@ -57,45 +60,56 @@ public class ArtikelRegister {
     }
 
     /**
-     * Uppdaterar lagersaldot baserat på information om sålda artiklar från en försäljning.
-     * 
-     * @param säljInformation Dataobjekt med information om sålda artiklar
+     * Uppdaterar lagersaldot baserat på sålda artiklar i DTO.
+     *
+     * @param säljInformation DTO som innehåller artiklar och mängder
      */
-    public void uppdateraLager(SkanningsDTO säljInformation){
-        if(säljInformation == null){
+    public void uppdateraLager(SkanningsDTO säljInformation) {
+        if (säljInformation == null) {
             return;
         }
-        for(SåldArtikel såldArtikel : säljInformation.getSåldaArtiklar()){
-            uppdateraLagerMedArtikel(såldArtikel);
+        for (SåldArtikelDTO såldArtikelDTO : säljInformation.getSåldaArtikelDTOs()) {
+            uppdateraLagerMedArtikelDTO(såldArtikelDTO);
         }
     }
 
-    private void uppdateraLagerMedArtikel(SåldArtikel såldArtikel){
-        ArtikelDTO såldArtikelDTO = såldArtikel.getArtikelDTO();
-        int mängdSålt = såldArtikel.getMängdSålt();
+    /**
+     * Hjälpmetod som minskar lagersaldot för en specifik artikel baserat på DTO.
+     *
+     * @param såldArtikelDTO DTO med artikelID och såld mängd
+     */
+    private void uppdateraLagerMedArtikelDTO(SåldArtikelDTO såldArtikelDTO) {
+        int artikelID = såldArtikelDTO.getArtikelID();
+        int mängdSålt = såldArtikelDTO.getMängd();
 
-        ArtikelILager artikelILager = hämtaArtikelMedID(såldArtikelDTO.getartikelID());
-        if(artikelILager != null){
+        ArtikelILager artikelILager = hämtaArtikelMedID(artikelID);
+        if (artikelILager != null) {
             minskaLagerMängd(artikelILager, mängdSålt);
         }
     }
 
     /**
-     * Hämtar artikel i lagret baserat på artikelID.
-     * 
-     * @param artikelID ID på artikeln som ska hämtas
-     * @return Objektet ArtikelILager som innehåller artikel och lagersaldo, eller null om inte hittad
+     * Hämtar artikelobjekt från lagret baserat på ID.
+     *
+     * @param artikelID Artikelns ID
+     * @return ArtikelILager-objekt eller null om det inte finns
      */
-    public ArtikelILager hämtaArtikelMedID(int artikelID){
-        for(ArtikelILager artikel : lager){
-            if(artikel.getArtikel().matcharArtikelID(artikelID)){
+    public ArtikelILager hämtaArtikelMedID(int artikelID) {
+        for (ArtikelILager artikel : lager) {
+            if (artikel.getArtikel().matcharArtikelID(artikelID)) {
                 return artikel;
             }
         }
         return null;
     }
 
-    private void minskaLagerMängd(ArtikelILager artikel, int mängdSålt){
+    /**
+     * Minskar lagersaldot för en artikel.
+     *
+     * @param artikel    Artikel i lager
+     * @param mängdSålt Antal sålda enheter
+     */
+    private void minskaLagerMängd(ArtikelILager artikel, int mängdSålt) {
         int nyMängd = artikel.getMängd() - mängdSålt;
         artikel.setMängd(nyMängd);
     }

@@ -1,6 +1,7 @@
 package model;
 
 import model.DTO.ArtikelDTO;
+import model.DTO.SåldArtikelDTO;
 
 /**
  * Representerar en artikel som har sålts under en försäljning.
@@ -55,4 +56,17 @@ public class SåldArtikel {
     public void läggTillBelopp(int belopp){
         mängdSålt += belopp;
     }
+
+    public SåldArtikelDTO toDTO() {
+    return new SåldArtikelDTO(
+        this.getArtikelDTO().getartikelID(),
+        this.getArtikelDTO().getnamn(),
+        this.getArtikelDTO().getartikelPris(),
+        this.getArtikelDTO().getVAT(),
+        this.getMängdSålt()
+        );
+    }
+
+
+
 }
